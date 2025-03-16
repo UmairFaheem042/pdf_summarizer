@@ -1,11 +1,15 @@
-import { Button } from "@/components/ui/button";
-import React from "react";
+import Hero from "@/components/home/Hero";
+import Working from "@/components/home/Working";
+import Pricing from "@/components/home/Pricing";
+import CTA from "@/components/home/CTA";
 
 const Home = () => {
   return (
     <div>
-      <h1 className="text-2xl">Home</h1>
-      <Button variant="secondary" size="lg">Hello World</Button>
+      <Hero />
+      <Working />
+      <Pricing />
+      <CTA />
     </div>
   );
 };

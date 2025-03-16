@@ -1,5 +1,8 @@
+import Header from "@/components/common/Header";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import Footer from "@/components/common/Footer";
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata = {
   title: "PDF Summarizer",
@@ -13,8 +16,14 @@ const hostGrotesk = Inter({
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={hostGrotesk.className}>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${hostGrotesk.className} flex flex-col min-h-screen`}>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

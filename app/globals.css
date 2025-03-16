@@ -2,13 +2,18 @@
 
 @plugin "tailwindcss-animate";
 
-@custom-variant dark (&:is(.dark *));
+/* @custom-variant dark (&:is(.dark *)); */
 
 @import "tailwindcss";
 
-/* * {
+* {
   font-family: "Host Grotesk", sans-serif;
-} */
+}
+
+body {
+  /* background-color: #f5f5f5; */
+  /* background-color: white !important; */
+}
 
 :root {
 
