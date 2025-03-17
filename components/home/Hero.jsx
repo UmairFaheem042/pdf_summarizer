@@ -11,8 +11,12 @@ const Hero = () => {
       </p>
 
       <h1 className="text-4xl font-semibold text-center break-words">
-        <span className="text-emerald-400">Summarize</span> your PDF files with
-        ease
+        Summarize{" "}
+        <span className="relative inline-block">
+          <span className="relative z-10 px-2">your PDF</span>
+          <span className="absolute inset-0 bg-emerald-200/50 -rotate-2 rounded-lg transform -skew-y-1"></span>
+        </span>{" "}
+        files with ease
       </h1>
 
       <p className="text-muted-foreground text-center break-words">
