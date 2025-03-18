@@ -1,9 +1,11 @@
 "use client";
 
-import { Button } from "../ui/button";
-import { FileText, Trash } from "lucide-react";
-import UploadFormInput from "./UploadFormInput";
+import { useState } from "react";
 import { z } from "zod";
+import UploadFormInput from "./UploadFormInput";
+import { useUploadThing } from "@/utils/uploadthing";
+import UploadedFile from "./UploadedFile";
+import { UTApi } from "uploadthing/server";
 
 // schema validation using ZOD
 const schema = z.object({
@@ -20,9 +22,49 @@ const schema = z.object({
 });
 
 const UploadForm = () => {
-  const isUploaded = false;
+  const [isUploaded, setIsUploaded] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
-  function handleSubmit(e) {
+  const [uploadedFile, setUploadedFile] = useState({
+    name: "",
+    url: "",
+  });
+
+  // `pdfUploader` => name matches with the name in the core.js file
+  const { startUpload, routeConfig } = useUploadThing("pdfUploader", {
+    onClientUploadComplete: (data) => {
+      console.log("Uploaded successfully", data);
+    },
+    onUploadError: (error) => {
+      console.log(`Error while uploading! ${error.message}`);
+    },
+    onUploadBegin: () => {
+      console.log("Uploading...");
+    },
+    onUploadComplete: () => {
+      console.log("Uploaded successfully");
+    },
+  });
+
+  async function handleDeleteUploadedFile(url) {
+    try {
+      console.log(url);
+
+      await fetch(`/api/uploadthing?key=${encodeURIComponent(url)}`, {
+        method: "DELETE",
+      });
+      // setIsUploaded(false);
+      // setUploadedFile({
+      //   name: "",
+      //   url: "",
+      //   key: "",
+      // });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -38,8 +80,22 @@ const UploadForm = () => {
     }
 
     // upload file to uploadThing
-    
+    setUploading(true);
+    const resp = await startUpload([file]);
+    setUploading(false);
+
+    if (!resp) return;
+
+    setUploadedFile({
+      name: resp[0].name,
+      url: resp[0].ufsUrl,
+      key: resp[0].key,
+    });
+
+    setIsUploaded(true);
+
     // parse the PDF using LangChain
+
     // save the summary to tht DB
     // redirect to summary page `dashboard/file/[id]`
   }
@@ -48,24 +104,16 @@ const UploadForm = () => {
     <div className="max-w-[450px] w-full flex flex-col gap-4 mt-6">
       {!isUploaded && <UploadFormInput onSubmit={handleSubmit} />}
 
-      {isUploaded && (
-        <div className="border p-4 rounded-md text-sm  ">
-          <div className="flex items-center justify-between gap-2 ">
-            <div className="flex items-center gap-2">
-              <FileText />
-              <span className="line-clamp-1">
-                Next.js Documentation for Beginners
-              </span>
-            </div>
-
-            <Trash className="w-4 h-4 cursor-pointer" />
-          </div>
-
-          <Button className="mt-4 w-full cursor-pointer">
-            Do the AI Magic
-          </Button>
-          {/* After i click on it the animation will happen like typewrite effect from top to down text coming and completing the animation*/}
+      {uploading && (
+        <div className="mt-2 text-sm">
+          <p className="text-emerald-500 font-thin text-center">
+            Hold tight we are uploading your file...
+          </p>
         </div>
+      )}
+
+      {isUploaded && (
+        <UploadedFile data={uploadedFile} onDelete={handleDeleteUploadedFile} />
       )}
     </div>
   );
