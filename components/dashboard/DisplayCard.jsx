@@ -7,7 +7,7 @@ const DisplayCard = ({ id, name, time, description, status }) => {
       <div className="flex flex-col gap-4 bg-card p-4 rounded-md border relative">
         <div className="flex items-center gap-4">
           <FileText className="w-8 h-8 text-emerald-400" />
-          <div className="flex flex-col">
+          <div className="flex flex-col mr-2">
             <h2 className="text-lg font-bold line-clamp-1">{name}</h2>
             <span className="text-[0.8rem] text-[rgba(0,0,0,0.3)] font-bold">
               {time}

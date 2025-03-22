@@ -1,10 +1,9 @@
 "use server";
 
 import { fetchAndExtractText } from "@/lib/langchain";
+import { generateSummaryFromOpenAI } from "@/lib/openAi";
 
 export const generatePdfSummary = async (resp) => {
-  console.log("resp from uploadAction: ", resp[0]);
-
   if (!resp) {
     return {
       success: false,
@@ -13,19 +12,10 @@ export const generatePdfSummary = async (resp) => {
     };
   }
 
-//   const {
-//     serverData: {
-//       userId,
-//       file: { url: pdfUrl, name: fileName },
-//     },
-//   } = resp[0];
-
   const userId = resp[0].serverData.userId;
   const pdfUrl = resp[0].serverData.file;
   const fileName = resp[0].name;
 
-  console.log("pdfUrl: ", pdfUrl);
-  console.log("fileName: ", fileName);
   if (!pdfUrl) {
     return {
       success: false,
@@ -34,15 +24,29 @@ export const generatePdfSummary = async (resp) => {
     };
   }
 
+  let summary;
   try {
-    console.log("pdfUrl just before fetchAndExtractText(): ", pdfUrl);
     const pdfText = await fetchAndExtractText(pdfUrl);
-    console.log("PDF Text: ", pdfText);
+    try {
+      summary = await generateSummaryFromOpenAI(pdfText);
+      console.log("Summary: ", summary);
+    } catch (error) {
+      console.log("Error: ", error.message);
+      // call gemini api
+    }
+
+    if (!summary) {
+      return {
+        success: false,
+        message: "Failed to generate summary",
+        data: null,
+      };
+    }
 
     return {
       success: true,
       message: "Summary generated successfully",
-      data: pdfText,
+      data: summary,
     };
   } catch (error) {
     return {

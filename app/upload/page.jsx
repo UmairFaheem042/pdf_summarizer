@@ -3,7 +3,7 @@ import { Sparkles } from "lucide-react";
 
 const Upload = () => {
   return (
-    <div className="h-[calc(100vh-60px)] flex flex-col gap-4 items-center justify-center">
+    <div className="h-[calc(100vh-60px)] flex flex-col gap-4 items-center justify-center px-4 lg:px-0">
       <p className="text-sm text-emerald-400 font-normal border border-emerald-300 rounded-full px-4 py-1 w-fit flex items-center gap-2 pointer-events-none">
         <Sparkles className="w-4 h-4" />
         AI Powered Content Creation

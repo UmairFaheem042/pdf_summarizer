@@ -4,7 +4,7 @@ import { Sparkles } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="flex flex-col gap-4 items-center justify-center h-[calc(100vh-80px)]">
+    <section className="flex flex-col gap-4 items-center justify-center h-[calc(100vh-80px)] lg:px-0 px-2">
       <p className="text-sm text-emerald-400 font-normal border border-emerald-300 rounded-full px-4 py-1 w-fit flex items-center gap-2 pointer-events-none">
         <Sparkles className="w-4 h-4" />
         Powered by AI

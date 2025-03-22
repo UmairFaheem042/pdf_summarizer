@@ -107,13 +107,15 @@ const UploadForm = () => {
     // ! parse the PDF using LangChain
     const summary = await generatePdfSummary(resp);
 
-    console.log("Summary: ", summary);
+    console.log("Summary: ", summary.data);
 
     // ! save the summary to tht DB
     // ! redirect to summary page `dashboard/file/[id]`
   }
 
-  console.log(uploadedFile);
+  async function handleAiMagic() {
+    console.log("AI Magic");
+  }
 
   return (
     <div className="max-w-[450px] w-full flex flex-col gap-4 mt-6">
@@ -128,7 +130,11 @@ const UploadForm = () => {
       )}
 
       {isUploaded && (
-        <UploadedFile data={uploadedFile} onDelete={handleDeleteUploadedFile} />
+        <UploadedFile
+          data={uploadedFile}
+          onDelete={handleDeleteUploadedFile}
+          handleAiMagic={handleAiMagic}
+        />
       )}
     </div>
   );
