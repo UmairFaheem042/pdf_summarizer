@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { useUploadThing } from "@/utils/uploadthing";
 import UploadFormInput from "./UploadFormInput";
@@ -23,13 +24,15 @@ const schema = z.object({
 });
 
 const UploadForm = () => {
+  const router = useRouter();
+
   const [isUploaded, setIsUploaded] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const [uploadedFile, setUploadedFile] = useState({
-    name: "",
-    url: "",
-  });
+  // const [uploadedFile, setUploadedFile] = useState({
+  //   name: "",
+  //   url: "",
+  // });
 
   // `pdfUploader` => name matches with the name in the core.js file
   const { startUpload, routeConfig } = useUploadThing("pdfUploader", {
@@ -87,30 +90,38 @@ const UploadForm = () => {
     // ! upload file to uploadThing
     setUploading(true);
     const resp = await startUpload([file]);
-    setUploading(false);
 
     if (!resp) {
       toast.error("Failed to upload file");
+      setUploading(false);
       return;
     }
 
-    setUploadedFile({
-      name: resp[0].name,
-      url: resp[0].ufsUrl,
-      key: resp[0].key,
-    });
-
-    setIsUploaded(true);
-    toast.success("File uploaded successfully");
+    // setUploadedFile({
+    //   name: resp[0].name,
+    //   url: resp[0].ufsUrl,
+    //   key: resp[0].key,
+    // });
 
     console.log(resp[0]);
     // ! parse the PDF using LangChain
     const summary = await generatePdfSummary(resp);
+    console.log("Summary: ", summary);
 
-    console.log("Summary: ", summary.data);
+    if (!summary.success) {
+      toast.error("Failed to generate summary");
+      setUploading(false);
+      return;
+    }
 
     // ! save the summary to tht DB
     // ! redirect to summary page `dashboard/file/[id]`
+
+    setIsUploaded(true);
+    setUploading(false);
+    toast.success("Summary generated successfully");
+
+    router.push(`/dashboard/file/${resp[0].key}`);
   }
 
   async function handleAiMagic() {
@@ -124,18 +135,18 @@ const UploadForm = () => {
       {uploading && (
         <div className="mt-2 text-sm">
           <p className="text-emerald-500 font-thin text-center">
-            Hold tight we are uploading your file...
+            Hold tight we are summarizing your file...
           </p>
         </div>
       )}
 
-      {isUploaded && (
+      {/* {isUploaded && (
         <UploadedFile
           data={uploadedFile}
           onDelete={handleDeleteUploadedFile}
           handleAiMagic={handleAiMagic}
         />
-      )}
+      )} */}
     </div>
   );
 };

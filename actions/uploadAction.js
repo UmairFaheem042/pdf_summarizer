@@ -1,7 +1,7 @@
 "use server";
 
+import { generateSummaryFromGemini } from "@/lib/gemini";
 import { fetchAndExtractText } from "@/lib/langchain";
-import { generateSummaryFromOpenAI } from "@/lib/openAi";
 
 export const generatePdfSummary = async (resp) => {
   if (!resp) {
@@ -24,18 +24,11 @@ export const generatePdfSummary = async (resp) => {
     };
   }
 
-  let summary;
   try {
     const pdfText = await fetchAndExtractText(pdfUrl);
-    try {
-      summary = await generateSummaryFromOpenAI(pdfText);
-      console.log("Summary: ", summary);
-    } catch (error) {
-      console.log("Error: ", error.message);
-      // call gemini api
-    }
-
+    const summary = await generateSummaryFromGemini(pdfText);
     if (!summary) {
+      // ! TODO: delete the file from the uploadThing in case of error
       return {
         success: false,
         message: "Failed to generate summary",
@@ -46,7 +39,12 @@ export const generatePdfSummary = async (resp) => {
     return {
       success: true,
       message: "Summary generated successfully",
-      data: summary,
+      data: {
+        summary,
+        userId,
+        fileName,
+        pdfUrl,
+      },
     };
   } catch (error) {
     return {

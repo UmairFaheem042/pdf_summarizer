@@ -14,7 +14,7 @@ const UploadFormInput = ({ onSubmit }) => {
         className="cursor-pointer"
       />
       <Button type="submit" className="cursor-pointer">
-        Upload
+        Get Insights
       </Button>
     </form>
   );
