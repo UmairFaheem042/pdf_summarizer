@@ -1,0 +1,44 @@
+import Link from "next/link";
+import { Button } from "../ui/button";
+import { Sparkles } from "lucide-react";
+import { MotionDiv, MotionH1, MotionSection } from "../common/motion-wrapper";
+import { containerVariants } from "@/utils/constants";
+
+const Hero = () => {
+  return (
+    <MotionSection
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="flex flex-col gap-4 items-center justify-center h-[calc(100vh-60px)] lg:px-0 px-2"
+    >
+      <p className="text-sm text-emerald-400 font-normal border border-emerald-300 rounded-full px-4 py-1 w-fit flex items-center gap-2 pointer-events-none">
+        <Sparkles className="w-4 h-4" />
+        Powered by AI
+      </p>
+
+      <h1 className="text-4xl font-semibold text-center break-words">
+        Summarize{" "}
+        <span className="relative inline-block">
+          <span className="relative z-10 px-2">your PDF</span>
+          <span className="absolute inset-0 bg-emerald-200/50 -rotate-2 rounded-lg transform -skew-y-1"></span>
+        </span>{" "}
+        files with ease
+      </h1>
+
+      <p className="text-muted-foreground text-center break-words">
+        Upload your PDF files and get a summary in seconds
+      </p>
+
+      <MotionDiv whileTap={{ scale: 0.9 }}>
+        <Link href="/upload">
+          <Button className="font-medium text-lg p-6 rounded-full cursor-pointer bg-gradient-to-r from-emerald-400 to-emerald-500 text-white">
+            Try Insight
+          </Button>
+        </Link>
+      </MotionDiv>
+    </MotionSection>
+  );
+};
+
+export default Hero;
